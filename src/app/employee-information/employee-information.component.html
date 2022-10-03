@@ -1,0 +1,90 @@
+<div class="content" role="main">
+
+    <h1>Employee Information</h1>
+    <div class="flex-container" fxLayout="column">
+      <mat-card>
+        <mat-card-title>Employee</mat-card-title>
+        <mat-card-content>
+          <form [formGroup]="formEmp">
+          <table class="example-full-width" cellspacing="10">
+            <tr>
+              <td>
+                <mat-form-field  appearance="outline">
+                  <mat-label>Name</mat-label>
+                  <input formControlName="name" matInput placeholder="Name">
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field  appearance="outline">
+                  <mat-label>Yearly Salary</mat-label>
+                  <input formControlName="yearlySalary" matInput placeholder="000000">
+                  <mat-error>Input value was not in a correct format</mat-error>
+                </mat-form-field>
+              </td>
+              <td>
+                <mat-form-field appearance="outline">
+                  <mat-label>No of Paycheck Per Year</mat-label>
+                  <input formControlName="noOfPayCheck" matInput placeholder="00">
+                  <mat-error>Input value was not in a correct format</mat-error>
+                </mat-form-field>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+              <button mat-raised-button color="primary" (click)="addRow()">Add Dependent</button> 
+              &nbsp;&nbsp;
+              <button mat-raised-button  color="primary"  type="submit" (click)="submit()">Calculate Deductions</button>
+            </td>
+            </tr>
+          </table>
+        </form>
+        </mat-card-content>
+      </mat-card>
+      <br>
+      <mat-card *ngIf="dataSource.length > 0">
+        <mat-card-title>Dependents</mat-card-title>
+        <mat-card-content>
+          <table mat-table [dataSource]="dataSource">
+            <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema">
+              <th mat-header-cell *matHeaderCellDef>
+                {{ col.label }}
+              </th>
+              <td mat-cell *matCellDef="let element; let i=index;">
+                <div [ngSwitch]="col.type" *ngIf="!element.isEdit">
+                  <div class="btn-edit" *ngSwitchCase="'isEdit'">
+                    <button mat-button (click)="element.isEdit = !element.isEdit">
+                      Edit
+                    </button>
+                    <button mat-button class="button-remove"  (click)="removeRow(i)">
+                      Delete
+                    </button>
+                  </div>
+                  <span *ngSwitchDefault>
+                    {{ element[col.key] }}
+                  </span>
+                </div>
+                <div [ngSwitch]="col.key" *ngIf="element.isEdit">
+                  <div class="btn-edit" *ngSwitchCase="'isEdit'">
+                    <button mat-button (click)="element.isEdit = !element.isEdit">
+                      Done
+                    </button>
+                  </div>
+                  <mat-select placeholder="Type"  *ngSwitchCase="'type'"  [(ngModel)]="element[col.key]">
+                    <mat-option [value]="type" *ngFor="let type of dependentType">
+                      {{ type }}
+                    </mat-option>
+                  </mat-select>
+                  <mat-form-field class="form-input" *ngSwitchDefault>
+                    <input [type]="col.type" matInput [(ngModel)]="element[col.key]" />
+                  </mat-form-field>
+                </div>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  
+  </div>
